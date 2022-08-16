@@ -214,9 +214,7 @@ These is one important thing to say: Lua patterns are using some, quite common,
 special characters (for example `-` and `%`) as magic characters which has
 special meaning. If you want to match such characeters, you need to escape them
 using `%` character. For example, this pattern can be used to match
-`wp-config.php`:
-
-`wp%-config`
+`wp-config.php`: `wp%-config`
 
 ## Testing
 
