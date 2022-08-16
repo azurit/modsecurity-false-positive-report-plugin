@@ -221,7 +221,7 @@ using `%` character. For example, this pattern can be used to match
 ## Testing
 
 After configuration, plugin should be tested, for example, using:  
-`curl http://localhost -H "Content-Type: application/xml" --data '<!--?xml version="1.0" ?--><!DOCTYPE replace [<!ENTITY ent SYSTEM "file:///etc/shadow"> ]><userInfo><firstName>John</firstName><lastName>&ent;</lastName></userInfo>'`
+...
 
 ## License
 
