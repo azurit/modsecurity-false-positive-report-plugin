@@ -2,11 +2,11 @@
 
 ## Description
 
-This is a plugin that brings ... to CRS.
+This is a plugin that brings false positives tracking helper to CRS.
 
 Plugin runs in phase 5 and watches all logs genereated by all rules and,
-depending on filters configuration, sends e-mail notifications in case
-a possible false positive (request does not need to be blocked for notification
+depending on filters configuration, sends e-mail notifications in case of
+possible false positive (request does not need to be blocked for notification
 to be generated).
 
 Logs are read from memory using `WEBSERVER_ERROR_LOG` variable, so plugin does
