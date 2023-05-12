@@ -14,6 +14,10 @@ function main()
 		m.log(2, "False Positive Report Plugin ERROR: LuaSocket library not installed, please install it or disable this plugin.")
 		return nil
 	end
+	local filter_rules = {}
+	for id in string.gmatch(m.getvar("tx.false-positive-report-plugin_filter_id", "none"), "%d+") do
+		filter_rules[id] = true
+	end
 	local ignore_rules = {}
 	for id in string.gmatch(m.getvar("tx.false-positive-report-plugin_filter_ignore_id", "none"), "%d+") do
 		ignore_rules[id] = true
@@ -81,7 +85,7 @@ function main()
 				if string.match(v["value"], "ModSecurity") then
 					if ignore_pcre_errors == "0" or (ignore_pcre_errors == "1" and string.match(v["value"], "PCRE limits exceeded") == nil) then
 						rule_id, rule_msg, rule_data = string.match(v["value"], ' %[id "(%d+)"%] %[msg "(.-)"%] %[data "(.-)"%] %[severity ')
-						if rule_id ~= nil and not ignore_rules[rule_id] then
+						if rule_id ~= nil and not ignore_rules[rule_id] and (next(filter_rules) == nil or filter_rules[rule_id]) then
 							ok = true
 							if ok then
 								for k2, v2 in pairs(ignore_messages) do
@@ -259,7 +263,7 @@ SecRule REQUEST_FILENAME "@endsWith %s" \
 %s
 
 === RESPONSE BODY ===
-%s]], time_year, time_mon, time_day, time_hour, time_min, time_sec, unique_id, request_line, server_name, remote_addr, response_status, request_uri, table.concat(whitelist, ",\\\n"), table.concat(request_headers_table, "\n"), table.concat(args, "\n"), request_body, table.concat(logs, "\n\n"), table.concat(logs_all, "\n\n"), full_request, table.concat(response_headers_table, "\n"), response_body)
+%s]], time_year, time_mon, time_day, time_hour, time_min, time_sec, unique_id, request_line, server_name, remote_addr, response_status, request_uri, table.concat(whitelist, ",\\\n    "), table.concat(request_headers_table, "\n"), table.concat(args, "\n"), request_body, table.concat(logs, "\n\n"), table.concat(logs_all, "\n\n"), full_request, table.concat(response_headers_table, "\n"), response_body)
 				smtp_headers = {}
 				smtp_headers["from"] = smtp_from
 				smtp_headers["to"] = smtp_to
