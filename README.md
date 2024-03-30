@@ -1,4 +1,4 @@
-# OWASP ModSecurity Core Rule Set - False Positive Report Plugin
+# OWASP CRS - False Positive Report Plugin
 
 ## Description
 
@@ -223,8 +223,8 @@ After configuration, plugin should be tested, for example, using:
 
 ## License
 
-Copyright (c) 2022 OWASP ModSecurity Core Rule Set project. All rights reserved.
+Copyright (c) 2022-2024 OWASP Core Rule Set project. All rights reserved.
 
-The OWASP ModSecurity Core Rule Set and its official plugins are distributed
+The OWASP CRS and its official plugins are distributed
 under Apache Software License (ASL) version 2. Please see the enclosed LICENSE
 file for full details.
