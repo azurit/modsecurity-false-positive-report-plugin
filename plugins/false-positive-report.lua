@@ -69,7 +69,7 @@ function main()
 	local ok = true
 	for k2, v2 in pairs(ignore_server_names) do
 		--m.log(2, string.format("!!! DEBUG using pattern %s to match server_name %s", v2, server_name))
-		if string.match(request_line, v2) then
+		if string.match(server_name, v2) then
 			--m.log(2, string.format("!!! DEBUG ignoring server_name %s using pattern %s", server_name, v2))
 			ok = false
 			break
