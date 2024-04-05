@@ -82,14 +82,14 @@ Default value: <server_hostname>: False positive report from CRS
 In case you want to use SMTP AUTH, fill in a username here. Otherwise, keep this
 empty.
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_smtp_password
 
 In case you want to use SMTP AUTH, fill in a password here. Otherwise, keep this
 empty.
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_smtp_server
 
@@ -101,7 +101,7 @@ Default value: localhost
 
 Port of SMTP server.
 
-Default: 25
+Default value: 25
 
 ### GeoIP configuration
 
@@ -125,7 +125,7 @@ Default value: 0
 Variable which holds GeoIP country code. Default value is suitable for
 `mod_maxminddb`.
 
-Default: %{env.geoip_country_code}
+Default value: %{env.geoip_country_code}
 
 ### Filters
 
@@ -142,13 +142,13 @@ to watch all countries.
 
 Example: SK CZ
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_filter_ignore_id
 
 Space separated IDs of rules which you want to ignore.
 
-Default: 949110 959100 980130 980140
+Default value: 949110 959100 980130 980140
 
 #### tx.false-positive-report-plugin_filter_ignore_request_method=CONNECT
 
@@ -157,7 +157,7 @@ HTTP method from the list above will be ignored.
 
 Example: CONNECT
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_filter_ignore_request_uri_X=/.env
 
@@ -175,7 +175,7 @@ tx.false-positive-report-plugin_filter_ignore_request_uri_3=/.git/config
 
 See `Pattern matching` section below.
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_filter_ignore_msg_1=
 
@@ -193,7 +193,7 @@ tx.false-positive-report-plugin_filter_ignore_msg_1=Host header is a numeric IP 
 tx.false-positive-report-plugin_filter_ignore_msg_2=Found User%-Agent associated with security scanner
 tx.false-positive-report-plugin_filter_ignore_msg_3=Fake bot detected
 
-Default:
+Default value:
 
 #### tx.false-positive-report-plugin_filter_ignore_pcre_limits_error
 
