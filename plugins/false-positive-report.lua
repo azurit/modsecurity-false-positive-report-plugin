@@ -227,7 +227,7 @@ function main()
 					end
 				end
 				local content = string.format(
-[[Hi, this is OWASP ModSecurity Core Rule Set False Positive Report Plugin!
+[[Hi, this is OWASP Core Rule Set False Positive Report Plugin!
 
 According to your configuration, blocking of this request may be based on false positive alarms.
 
