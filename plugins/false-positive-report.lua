@@ -77,9 +77,9 @@ function main()
 	end
 	if ok then
 		for k2, v2 in pairs(ignore_request_uris) do
-			--m.log(2, string.format("!!! DEBUG using pattern %s to match request_line %s", v2, request_line))
-			if string.match(request_line, v2) then
-				--m.log(2, string.format("!!! DEBUG ignoring request_line %s using pattern %s", request_line, v2))
+			--m.log(2, string.format("!!! DEBUG using pattern %s to match request_line %s", v2, request_uri))
+			if string.match(request_uri, v2) then
+				--m.log(2, string.format("!!! DEBUG ignoring request_line %s using pattern %s", request_uri, v2))
 				ok = false
 				break
 			end
