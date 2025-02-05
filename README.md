@@ -46,7 +46,7 @@ of installation on Debian linux:
 ## Plugin installation
 
 For full and up to date instructions for the different available plugin
-installation methods, refer to [How to Install a Plugin](https://coreruleset.org/docs/concepts/plugins/#how-to-install-a-plugin)
+installation methods, refer to [How to Install a Plugin](https://coreruleset.org/docs/4-about-plugins/4-1-plugins/#how-to-install-a-plugin)
 in the official CRS documentation.
 
 ## Configuration
@@ -115,7 +115,7 @@ externally provided GeoIP data (for example mod_geoip2 / mod_maxminddb). See
 setting `tx.false-positive-report-plugin_geoip_country_code` below.
 
 Values:
- * 0 - disable custom GeoIP lookups and use ModSecurity build-id GeoIP lookups
+ * 0 - disable custom GeoIP lookups and use ModSecurity built-in GeoIP lookups
  * 1 - enable custom GeoIP lookups
 
 Default value: 0
@@ -169,10 +169,11 @@ example below. There must be no gap in setting names numbering - all patterns
 after a first gap will be ignored.
 
 Example:
-tx.false-positive-report-plugin_filter_ignore_request_uri_1=/.env
-tx.false-positive-report-plugin_filter_ignore_request_uri_2=wp%-config
-tx.false-positive-report-plugin_filter_ignore_request_uri_3=/.git/config
-
+```
+'tx.false-positive-report-plugin_filter_ignore_request_uri_1=/.env',\
+'tx.false-positive-report-plugin_filter_ignore_request_uri_2=wp%-config',\
+'tx.false-positive-report-plugin_filter_ignore_request_uri_3=/.git/config',\
+```
 See `Pattern matching` section below.
 
 Default value:
@@ -189,10 +190,11 @@ example below. There must be no gap in setting names numbering.
 See `Pattern matching` section below.
 
 Example:
-tx.false-positive-report-plugin_filter_ignore_msg_1=Host header is a numeric IP address
-tx.false-positive-report-plugin_filter_ignore_msg_2=Found User%-Agent associated with security scanner
-tx.false-positive-report-plugin_filter_ignore_msg_3=Fake bot detected
-
+```
+'tx.false-positive-report-plugin_filter_ignore_msg_1=Host header is a numeric IP address',\
+'tx.false-positive-report-plugin_filter_ignore_msg_2=Found User%-Agent associated with security scanner',\
+'tx.false-positive-report-plugin_filter_ignore_msg_3=Fake bot detected',\
+```
 Default value:
 
 #### tx.false-positive-report-plugin_filter_ignore_pcre_limits_error
@@ -212,14 +214,19 @@ standard regular expressions. See Lua [documentation](https://www.lua.org/pil/20
 
 These is one important thing to say: Lua patterns are using some, quite common,
 special characters (for example `-` and `%`) as magic characters which has
-special meaning. If you want to match such characeters, you need to escape them
+special meaning. If you want to match such characters, you need to escape them
 using `%` character. For example, this pattern can be used to match
 `wp-config.php`: `wp%-config`
 
 ## Testing
 
 After configuration, plugin should be tested, for example, using:  
-...
+```
+curl https://yourdomain.tld/dump.sql
+```
+
+This will result in modsecurity sending an email to your configured email address, providing you with 
+some basic data, an exclusion rule suggestion, relevant error logs etc.
 
 ## License
 
