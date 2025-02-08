@@ -56,16 +56,6 @@ function main()
 		ignore_request_uris[i] = c
 	end
 	local ignore_host_uri_patterns = {}
-	for i = 1, 100 do
-	       local c = m.getvar(string.format("tx.false-positive-report-plugin_filter_ignore_host_uri_%s", i), "none")
-    	       if c == nil or c == "" then
-        	       break
-    	       end
-    	       ignore_host_uri_patterns[i] = c
-	end
-
-
-
 
 	local webserver_error_log = m.getvar("WEBSERVER_ERROR_LOG", "none")
 	local ignore_pcre_errors = m.getvar("tx.false-positive-report-plugin_filter_ignore_pcre_limits_error", "none")
@@ -73,8 +63,6 @@ function main()
 	local request_line = m.getvar("REQUEST_LINE", {"none", "urlDecode"})
 	-- As we are running in phase 5, REQUEST_URI could already be rewritten by, for example, mod_rewrite. We need to get it from REQUEST_LINE.
 	local request_uri = string.match(request_line, "^[A-Z]+ (.-) HTTP/[0-9\.]+$")
-	local host_header = m.getvar("REQUEST_HEADERS:Host", "none")
-	local host_uri = host_header .. request_uri
 	-- Stripping query string data. 
 	if string.find(request_uri, "?") then
 		-- Getting first value from iterator.
@@ -97,12 +85,6 @@ function main()
 				ok = false
 				break
 			end
-		end
-		for _, pattern in pairs(ignore_host_uri_patterns) do
-	      		if string.match(host_uri, pattern) then
-        	  		ok = false
-	              		break
-    	      		end
 		end
 		if ok then
 			local logs = {}
