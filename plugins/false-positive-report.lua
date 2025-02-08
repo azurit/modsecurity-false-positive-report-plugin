@@ -55,7 +55,6 @@ function main()
 		end
 		ignore_request_uris[i] = c
 	end
-	local ignore_host_uri_patterns = {}
 
 	local webserver_error_log = m.getvar("WEBSERVER_ERROR_LOG", "none")
 	local ignore_pcre_errors = m.getvar("tx.false-positive-report-plugin_filter_ignore_pcre_limits_error", "none")
