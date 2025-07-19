@@ -1,6 +1,6 @@
 -- -----------------------------------------------------------------------
 -- OWASP CRS Plugin
--- Copyright (c) 2022-2024 Core Rule Set project. All rights reserved.
+-- Copyright (c) 2022-2025 Core Rule Set project. All rights reserved.
 --
 -- The OWASP CRS plugins are distributed under
 -- Apache Software License (ASL) version 2
@@ -11,9 +11,28 @@ function string_strip(str)
 	return string.gsub(str, "^%s*(.-)%s*$", "%1")
 end
 
+-- Inspired by Stack Overflow
+function sslCreate()
+	local sock = socket.tcp()
+	return setmetatable({
+		connect = function(_, host, port)
+			local r, e = sock:connect(host, port)
+			if not r then return r, e end
+			sock = ssl.wrap(sock, {mode="client", protocol=smtp_tls_protocol})
+			return sock:dohandshake()
+		end
+	}, {
+		__index = function(t,n)
+			return function(_, ...)
+				return sock[n](sock, ...)
+			end
+		end
+	})
+end
+
 function main()
 	pcall(require, "m")
-	local ok, socket = pcall(require, "socket")
+	ok, socket = pcall(require, "socket")
 	if not ok then
 		m.log(2, "False Positive Report Plugin ERROR: LuaSocket library not installed, please install it or disable this plugin.")
 		return nil
@@ -22,6 +41,15 @@ function main()
 	if not ok then
 		m.log(2, "False Positive Report Plugin ERROR: LuaSocket library not installed, please install it or disable this plugin.")
 		return nil
+	end
+	local smtp_tls = m.getvar("tx.false-positive-report-plugin_smtp_tls", "none")
+	if smtp_tls == "1" then
+		ok, ssl = pcall(require, "ssl")
+		if not ok then
+			m.log(2, "False Positive Report Plugin ERROR: LuaSec library not installed, please install it or disable TLS or disable this plugin.")
+			return nil
+		end
+		smtp_tls_protocol = m.getvar("tx.false-positive-report-plugin_smtp_tls_protocol", "none")
 	end
 	local filter_rules = {}
 	for id in string.gmatch(m.getvar("tx.false-positive-report-plugin_filter_id", "none"), "%d+") do
@@ -60,7 +88,8 @@ function main()
 	local server_name = m.getvar("SERVER_NAME", "none")
 	local request_line = m.getvar("REQUEST_LINE", {"none", "urlDecode"})
 	-- As we are running in phase 5, REQUEST_URI could already be rewritten by, for example, mod_rewrite. We need to get it from REQUEST_LINE.
-	local request_uri = string.match(request_line, "^[A-Z]+ (.-) HTTP/[0-9\.]+$")
+	--local request_uri = string.match(request_line, "^[A-Z]+ (.-) HTTP/[0-9\.]+$")
+	local request_uri = string.match(request_line, "^[A-Z]+ (.-) HTTP/[0-9.]+$")
 	-- Stripping query string data. 
 	if string.find(request_uri, "?") then
 		-- Getting first value from iterator.
@@ -156,6 +185,17 @@ function main()
 			if next(logs) then
 				local smtp_from = m.getvar("tx.false-positive-report-plugin_smtp_from", "none")
 				local smtp_to = m.getvar("tx.false-positive-report-plugin_smtp_to", "none")
+				local smtp_rcpt = {}
+				table.insert(smtp_rcpt, string.format("<%s>", smtp_to))
+				--local smtp_rcpt = {[1]=string.format("<%s>", smtp_to)}
+				for i = 1, 5 do
+					local c = m.getvar(string.format("tx.false-positive-report-plugin_smtp_cc_%s", i), "none")
+					if c == nil or c == "" then
+						break
+					end
+					table.insert(smtp_rcpt, string.format("<%s>", c))
+				end
+
 				local hostname = socket.dns.gethostname()
 				local time_day = m.getvar("TIME_DAY", "none")
 				local time_mon = m.getvar("TIME_MON", "none")
@@ -286,11 +326,14 @@ SecRule REQUEST_FILENAME "@endsWith %s" \
 
 				smtpparams = {
 					from = string.format("<%s>", smtp_from),
-					rcpt = string.format("<%s>", smtp_to),
+					rcpt = smtp_rcpt,
 					source = smtp.message(mesgt),
 					server = m.getvar("tx.false-positive-report-plugin_smtp_server", "none"),
 					port = m.getvar("tx.false-positive-report-plugin_smtp_port", "none")
 				}
+				if smtp_tls == "1" then
+					smtpparams["create"] = sslCreate
+				end
 				smtp_user = m.getvar("tx.false-positive-report-plugin_smtp_user", "none")
 				if smtp_user ~= "" then
 					smtpparams["user"] = smtp_user
